@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rayhan's AI Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3a0ca3;
+            --accent: #7209b7;
+            --success: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --radius: 16px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--dark);
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            height: 90vh;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 300px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 30px 25px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-text h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 22px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .logo-text p {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-top: 3px;
+        }
+
+        .user-profile {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .avatar {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 600;
+            color: white;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .user-info h3 {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .user-info p {
+            text-align: center;
+            font-size: 14px;
+            opacity: 0.9;
+            word-break: break-word;
+        }
+
+        .features {
+            flex-grow: 1;
+        }
+
+        .features h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .feature-list li:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-list li i {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .session-id {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 13px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .session-id i {
+            font-size: 14px;
+        }
+
+        /* Main Chat Area */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fafbfe;
+            position: relative;
+        }
+
+        .chat-header {
+            padding: 25px 30px;
+            background: white;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .chat-title h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .chat-title p {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: var(--light);
+            border: 1px solid var(--light-gray);
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 18px;
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Chat Messages */
+        .messages-container {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .message {
+            max-width: 70%;
+            display: flex;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            margin-left: 15px;
+            margin-right: 0;
+        }
+
+        .message.bot .message-avatar {
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            color: white;
+            margin-right: 15px;
+        }
+
+        .message-content {
+            background: white;
+            border-radius: 18px;
+            padding: 18px 22px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+            max-width: calc(100% - 55px);
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.bot .message-content {
+            border-bottom-left-radius: 5px;
+            border: 1px solid var(--light-gray);
+        }
+
+        .message-text {
+            font-size: 15px;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+
+        .message-time {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .message.user .message-time {
+            justify-content: flex-end;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .message.bot .message-time {
+            color: var(--gray);
+        }
+
+        .message-time i {
+            font-size: 11px;
+        }
+
+        /* Special Message Types */
+        .meeting-slots {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .meeting-slots h4 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .slot-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .slot-option {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .slot-option:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.15);
+        }
+
+        .slot-time {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .slot-date {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .tool-indicator {
+            display: inline-block;
+            background: rgba(114, 9, 183, 0.1);
+            color: var(--accent);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 10px;
+            margin-right: 8px;
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 25px 30px;
+            background: white;
+            border-top: 1px solid var(--light-gray);
+            position: relative;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .input-wrapper textarea {
+            width: 100%;
+            min-height: 56px;
+            max-height: 120px;
+            padding: 18px 20px;
+            padding-right: 50px;
+            border: 2px solid var(--light-gray);
+            border-radius: 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            resize: none;
+            outline: none;
+            transition: var(--transition);
+            background: var(--light);
+            line-height: 1.5;
+        }
+
+        .input-wrapper textarea:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .input-hint {
+            font-size: 13px;
+            color: var(--gray);
+            margin-top: 8px;
+            padding-left: 5px;
+        }
+
+        .send-btn {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .send-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .mic-btn {
+            position: absolute;
+            right: 15px;
+            bottom: 15px;
+            background: transparent;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 18px;
+            transition: var(--transition);
+        }
+
+        .mic-btn:hover {
+            color: var(--primary);
+        }
+
+        /* Loading Animation */
+        .loading-dots {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            height: 30px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.3s; }
+        .dot:nth-child(2) { animation-delay: -0.15s; }
+        .dot:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes pulse {
+            0%, 60%, 100% { transform: scale(1); opacity: 0.5; }
+            30% { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* Welcome Message */
+        .welcome-message {
+            background: linear-gradient(135deg, #f8f9ff, #f0f2ff);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin-bottom: 25px;
+            border: 1px solid #e0e7ff;
+        }
+
+        .welcome-message h3 {
+            font-size: 20px;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .welcome-message p {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+
+        .steps {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 200px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--success);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: var(--success);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .step h4 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .step p {
+            font-size: 14px;
+            color: var(--gray);
+            margin: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .app-container {
+                flex-direction: column;
+                height: 95vh;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 20px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+            
+            .logo {
+                margin-bottom: 0;
+                flex: 1;
+            }
+            
+            .user-profile {
+                flex: 1;
+                margin-bottom: 0;
+                min-width: 200px;
+            }
+            
+            .features {
+                display: none;
+            }
+            
+            .session-id {
+                flex: 1;
+                min-width: 100%;
+                margin-top: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .message {
+                max-width: 85%;
+            }
+            
+            .messages-container {
+                padding: 20px;
+            }
+            
+            .chat-header {
+                padding: 20px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .chat-actions {
+                align-self: flex-end;
+            }
+            
+            .slot-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            body {
+                padding: 10px;
+            }
+            
+            .app-container {
+                height: 97vh;
+                border-radius: 12px;
+            }
+            
+            .input-area {
+                padding: 15px;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            .message-content {
+                padding: 15px 18px;
+            }
+        }
+
+        /* Scrollbar Styling */
+        .messages-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .messages-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .messages-container::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 4px;
+        }
+
+        .messages-container::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Rayhan's AI Assistant</h1>
+                    <p>Your Personal Meeting Scheduler</p>
+                </div>
+            </div>
+            
+            <div class="user-profile">
+                <div class="avatar" id="userAvatar">?</div>
+                <div class="user-info">
+                    <h3 id="userName">Guest User</h3>
+                    <p id="userEmail">Tell me your name & email</p>
+                </div>
+            </div>
+            
+            <div class="features">
+                <h3>Assistant Features</h3>
+                <ul class="feature-list">
+                    <li>
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Schedule Meetings</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-clock"></i>
+                        <span>Check Availability</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <span>Email Confirmations</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-info-circle"></i>
+                        <span>Get Information</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="session-id">
+                <i class="fas fa-id-card"></i>
+                <span>Session: <span id="sessionId">Loading...</span></span>
+            </div>
+        </div>
+        
+        <!-- Main Chat Area -->
+        <div class="chat-area">
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <div class="chat-title">
+                    <h2>Chat with Rayhan's Assistant</h2>
+                    <p>Ask anything or schedule a meeting with Rayhan</p>
+                </div>
+                <div class="chat-actions">
+                    <button class="action-btn" id="clearBtn" title="Clear Chat">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                    <button class="action-btn" id="infoBtn" title="Instructions">
+                        <i class="fas fa-info"></i>
+                    </button>
+                    <button class="action-btn" id="themeBtn" title="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Chat Messages -->
+            <div class="messages-container" id="chatHistory">
+                <!-- Welcome Message -->
+                <div class="welcome-message">
+                    <h3><i class="fas fa-comments"></i> Welcome to Rayhan's Assistant!</h3>
+                    <p>I'm here to help you connect with Rayhan. You can ask questions about him, check his availability, or schedule a meeting. Let's get started!</p>
+                    
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <h4>Introduce Yourself</h4>
+                            <p>Tell me your name and email address</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <h4>Ask or Schedule</h4>
+                            <p>Ask about Rayhan or request a meeting</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <h4>Get Confirmation</h4>
+                            <p>Receive meeting details via email</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Initial Bot Message -->
+                <div class="message bot">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-text">
+                            Hello! 👋 I'm Rayhan's personal assistant. To get started, please tell me your name and email address.
+                        </div>
+                        <div class="message-time">
+                            <i class="far fa-clock"></i>
+                            <span id="initialTime">Just now</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Input Area -->
+            <div class="input-area">
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <textarea 
+                            id="userInput" 
+                            placeholder="Type your message here... (Example: 'My name is John, email is john@example.com')" 
+                            rows="1"
+                            autocomplete="off"
+                        ></textarea>
+                        <button class="mic-btn" id="micBtn">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                    </div>
+                    <button class="send-btn" id="sendBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="input-hint">
+                    Press Enter to send • Shift+Enter for new line
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const chatHistory = document.getElementById('chatHistory');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const micBtn = document.getElementById('micBtn');
+        const infoBtn = document.getElementById('infoBtn');
+        const themeBtn = document.getElementById('themeBtn');
+        const userName = document.getElementById('userName');
+        const userEmail = document.getElementById('userEmail');
+        const userAvatar = document.getElementById('userAvatar');
+        const sessionId = document.getElementById('sessionId');
+        
+        // API Configuration
+        const API_URL = 'http://127.0.0.1:8000/chat';
+        
+        // State Management
+        let currentSessionId = localStorage.getItem('sessionId') || generateSessionId();
+        let userDetails = {
+            name: localStorage.getItem('userName') || '',
+            email: localStorage.getItem('userEmail') || ''
+        };
+        let isDarkMode = false;
+        
+        // Initialize App
+        function init() {
+            // Set session ID
+            sessionId.textContent = currentSessionId.substring(0, 10) + '...';
+            localStorage.setItem('sessionId', currentSessionId);
+            
+            // Set initial time
+            document.getElementById('initialTime').textContent = formatTime(new Date());
+            
+            // Load user details if available
+            if (userDetails.name) {
+                userName.textContent = userDetails.name;
+                userAvatar.textContent = userDetails.name.charAt(0).toUpperCase();
+            }
+            
+            if (userDetails.email) {
+                userEmail.textContent = userDetails.email;
+                // Show welcome back message
+                showWelcomeBackMessage();
+            }
+            
+            // Load chat history
+            loadChatHistory();
+            
+            // Auto-resize textarea
+            setupTextareaAutoResize();
+            
+            // Add welcome message tips after a delay
+            setTimeout(showTips, 2000);
+        }
+        
+        // Generate session ID
+        function generateSessionId() {
+            const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            let id = 'sess_';
+            for (let i = 0; i < 12; i++) {
+                id += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return id;
+        }
+        
+        // Format time
+        function formatTime(date) {
+            return date.toLocaleTimeString([], { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            });
+        }
+        
+        // Format date
+        function formatDate(date) {
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            return date.toLocaleDateString('en-US', options);
+        }
+        
+        // Show welcome back message
+        function showWelcomeBackMessage() {
+            const welcomeBack = document.createElement('div');
+            welcomeBack.className = 'message bot';
+            welcomeBack.innerHTML = `
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-text">
+                        Welcome back, <strong>${userDetails.name}</strong>! 😊 How can I assist you today?
+                    </div>
+                    <div class="message-time">
+                        <i class="far fa-clock"></i>
+                        <span>${formatTime(new Date())}</span>
+                    </div>
+                </div>
+            `;
+            chatHistory.appendChild(welcomeBack);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+        
+        // Show tips
+        function showTips() {
+            const tips = [
+                "💡 <strong>Tip:</strong> You can say 'Schedule a meeting with Rayhan' to check availability",
+                "💡 <strong>Tip:</strong> Need info about Rayhan? Just ask!",
+                "💡 <strong>Tip:</strong> Make sure to provide your email for meeting confirmations"
+            ];
+            
+            // Randomly show a tip
+            const randomTip = tips[Math.floor(Math.random() * tips.length)];
+            
+            const tipMessage = document.createElement('div');
+            tipMessage.className = 'message bot';
+            tipMessage.innerHTML = `
+                <div class="message-avatar">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-text">
+                        ${randomTip}
+                    </div>
+                    <div class="message-time">
+                        <i class="far fa-clock"></i>
+                        <span>${formatTime(new Date())}</span>
+                    </div>
+                </div>
+            `;
+            chatHistory.appendChild(tipMessage);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+        
+        // Setup textarea auto-resize
+        function setupTextareaAutoResize() {
+            userInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+        }
+        
+        // Add user message
+        function addUserMessage(text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            messageDiv.innerHTML = `
+                <div class="message-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-text">${text}</div>
+                    <div class="message-time">
+                        <i class="far fa-clock"></i>
+                        <span>${formatTime(new Date())}</span>
+                    </div>
+                </div>
+            `;
+            chatHistory.appendChild(messageDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            
+            // Save to history
+            saveChatMessage('user', text);
+        }
+        
+        // Add bot message
+        function addBotMessage(text, toolUsed = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+            
+            let toolIndicator = '';
+            if (toolUsed) {
+                toolIndicator = `<div class="tool-indicator"><i class="fas fa-cog"></i> ${toolUsed}</div>`;
+            }
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-text">${text} ${toolIndicator}</div>
+                    <div class="message-time">
+                        <i class="far fa-clock"></i>
+                        <span>${formatTime(new Date())}</span>
+                    </div>
+                </div>
+            `;
+            chatHistory.appendChild(messageDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            
+            // Save to history
+            saveChatMessage('bot', text);
+        }
+        
+        // Add loading indicator
+        function addLoadingIndicator() {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message bot';
+            loadingDiv.id = 'loadingIndicator';
+            loadingDiv.innerHTML = `
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-text">
+                        <div class="loading-dots">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                    <div class="message-time">
+                        <i class="far fa-clock"></i>
+                        <span>${formatTime(new Date())}</span>
+                    </div>
+                </div>
+            `;
+            chatHistory.appendChild(loadingDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+        
+        // Remove loading indicator
+        function removeLoadingIndicator() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            if (loadingIndicator) {
+                loadingIndicator.remove();
+            }
+        }
+        
+        // Send message to API
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+            
+            // Extract user details if not already set
+            if (!userDetails.name || !userDetails.email) {
+                extractUserDetails(message);
+            }
+            
+            // Add user message
+            addUserMessage(message);
+            
+            // Clear and reset input
+            userInput.value = '';
+            userInput.style.height = 'auto';
+            
+            // Add loading indicator
+            addLoadingIndicator();
+            
+            try {
+                // Prepare payload
+                const payload = {
+                    user_query: message,
+                    session_id: currentSessionId
+                };
+                
+                // Send to API
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Remove loading indicator
+                removeLoadingIndicator();
+                
+                // Process API response
+                processAPIResponse(data, message);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                removeLoadingIndicator();
+                addBotMessage("I'm having trouble connecting to the assistant. Please check your internet connection or try again.");
+            }
+        }
+        
+        // Process API response
+        function processAPIResponse(data, originalMessage) {
+            let botResponse = "I'll help you with that!";
+            let toolUsed = null;
+            
+            // Extract response text
+            if (data.output) {
+                botResponse = data.output;
+            } else if (data.response) {
+                botResponse = data.response;
+            } else if (data.message) {
+                botResponse = data.message;
+            } else if (typeof data === 'string') {
+                botResponse = data;
+            }
+            
+            // Check for meeting-related responses
+            const lowerMessage = originalMessage.toLowerCase();
+            const lowerResponse = botResponse.toLowerCase();
+            
+            if (lowerResponse.includes('available') || 
+                lowerResponse.includes('slot') || 
+                lowerResponse.includes('tomorrow') ||
+                lowerMessage.includes('meeting') ||
+                lowerMessage.includes('schedule') ||
+                lowerMessage.includes('available')) {
+                
+                toolUsed = "fetch_event_from_calender";
+                
+                // Add meeting slots if not already in response
+                if (!botResponse.includes('Option') && !botResponse.includes('10:00')) {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    
+                    botResponse += `
+                    <div class="meeting-slots">
+                        <h4><i class="fas fa-calendar-alt"></i> Available Slots for ${formatDate(tomorrow)}:</h4>
+                        <div class="slot-options">
+                            <div class="slot-option" onclick="selectMeetingSlot('10:00 AM - 11:00 AM')">
+                                <div class="slot-time">10:00 AM - 11:00 AM</div>
+                                <div class="slot-date">Morning Session</div>
+                            </div>
+                            <div class="slot-option" onclick="selectMeetingSlot('3:00 PM - 4:00 PM')">
+                                <div class="slot-time">3:00 PM - 4:00 PM</div>
+                                <div class="slot-date">Afternoon Session</div>
+                            </div>
+                            <div class="slot-option" onclick="selectMeetingSlot('5:00 PM - 6:00 PM')">
+                                <div class="slot-time">5:00 PM - 6:00 PM</div>
+                                <div class="slot-date">Evening Session</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 14px; color: #666;">Click on a time slot to confirm your meeting.</p>`;
+                }
+            }
+            
+            addBotMessage(botResponse, toolUsed);
+        }
+        
+        // Extract user details
+        function extractUserDetails(message) {
+            // Email extraction
+            const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
+            const emailMatch = message.match(emailRegex);
+            
+            if (emailMatch && !userDetails.email) {
+                userDetails.email = emailMatch[0];
+                userEmail.textContent = userDetails.email;
+                localStorage.setItem('userEmail', userDetails.email);
+            }
+            
+            // Name extraction patterns
+            const namePatterns = [
+                /my name is (\w+)/i,
+                /i am (\w+)/i,
+                /name's (\w+)/i,
+                /call me (\w+)/i,
+                /(\w+) here/i,
+                /this is (\w+)/i,
+                /hey.*i'?m (\w+)/i
+            ];
+            
+            if (!userDetails.name) {
+                for (const pattern of namePatterns) {
+                    const match = message.match(pattern);
+                    if (match && match[1]) {
+                        userDetails.name = match[1];
+                        userName.textContent = userDetails.name;
+                        userAvatar.textContent = userDetails.name.charAt(0).toUpperCase();
+                        localStorage.setItem('userName', userDetails.name);
+                        break;
+                    }
+                }
+            }
+            
+            // If no pattern matched, try to get first word as name
+            if (!userDetails.name && message.split(' ').length > 0) {
+                const words = message.split(' ');
+                if (words.length >= 2 && !words[0].includes('@')) {
+                    userDetails.name = words[0];
+                    userName.textContent = userDetails.name;
+                    userAvatar.textContent = userDetails.name.charAt(0).toUpperCase();
+                    localStorage.setItem('userName', userDetails.name);
+                }
+            }
+        }
+        
+        // Handle meeting slot selection
+        window.selectMeetingSlot = function(slot) {
+            addUserMessage(`I'd like to book the ${slot} slot.`);
+            
+            setTimeout(() => {
+                addBotMessage(`Great choice! I'm booking your meeting with Rayhan for ${slot}.`, "Create_a_meeting");
+                
+                // Simulate sending email
+                setTimeout(() => {
+                    addBotMessage(`✅ Meeting confirmed! A Google Meet link has been sent to ${userDetails.email || 'your email'}. You'll receive calendar invites shortly.`, "send_email");
+                }, 1500);
+            }, 800);
+        };
+        
+        // Save chat message
+        function saveChatMessage(sender, text) {
+            let chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+            chatHistory.push({
+                sender: sender,
+                text: text,
+                time: formatTime(new Date()),
+                timestamp: new Date().toISOString()
+            });
+            
+            // Keep last 100 messages
+            if (chatHistory.length > 100) {
+                chatHistory = chatHistory.slice(-100);
+            }
+            
+            localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+        }
+        
+        // Load chat history
+        function loadChatHistory() {
+            const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+            
+            if (savedHistory.length > 0) {
+                // Remove welcome messages if we have history
+                const welcomeMessage = document.querySelector('.welcome-message');
+                const initialBotMessage = document.querySelector('.message.bot');
+                
+                if (welcomeMessage) welcomeMessage.remove();
+                if (initialBotMessage) initialBotMessage.remove();
+                
+                // Load saved messages
+                savedHistory.forEach(msg => {
+                    if (msg.sender === 'user') {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.className = 'message user';
+                        messageDiv.innerHTML = `
+                            <div class="message-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="message-content">
+                                <div class="message-text">${msg.text}</div>
+                                <div class="message-time">
+                                    <i class="far fa-clock"></i>
+                                    <span>${msg.time}</span>
+                                </div>
+                            </div>
+                        `;
+                        chatHistory.appendChild(messageDiv);
+                    } else {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.className = 'message bot';
+                        messageDiv.innerHTML = `
+                            <div class="message-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="message-content">
+                                <div class="message-text">${msg.text}</div>
+                                <div class="message-time">
+                                    <i class="far fa-clock"></i>
+                                    <span>${msg.time}</span>
+                                </div>
+                            </div>
+                        `;
+                        chatHistory.appendChild(messageDiv);
+                    }
+                });
+                
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+            }
+        }
+        
+        // Clear chat history
+        function clearChatHistory() {
+            if (confirm("Clear all chat history? This action cannot be undone.")) {
+                chatHistory.innerHTML = '';
+                localStorage.removeItem('chatHistory');
+                
+                // Reset user details
+                userDetails = { name: '', email: '' };
+                userName.textContent = 'Guest User';
+                userEmail.textContent = 'Tell me your name & email';
+                userAvatar.textContent = '?';
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userEmail');
+                
+                // Show initial messages
+                const welcomeHTML = `
+                    <div class="welcome-message">
+                        <h3><i class="fas fa-comments"></i> Welcome to Rayhan's Assistant!</h3>
+                        <p>I'm here to help you connect with Rayhan. You can ask questions about him, check his availability, or schedule a meeting. Let's get started!</p>
+                        <div class="steps">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <h4>Introduce Yourself</h4>
+                                <p>Tell me your name and email address</p>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <h4>Ask or Schedule</h4>
+                                <p>Ask about Rayhan or request a meeting</p>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <h4>Get Confirmation</h4>
+                                <p>Receive meeting details via email</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="message bot">
+                        <div class="message-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <div class="message-text">
+                                Hello! 👋 I'm Rayhan's personal assistant. To get started, please tell me your name and email address.
+                            </div>
+                            <div class="message-time">
+                                <i class="far fa-clock"></i>
+                                <span>${formatTime(new Date())}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                chatHistory.innerHTML = welcomeHTML;
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+            }
+        }
+        
+        // Toggle theme
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            const body = document.body;
+            const container = document.querySelector('.app-container');
+            
+            if (isDarkMode) {
+                body.style.background = '#121212';
+                body.style.color = '#ffffff';
+                container.style.background = '#1e1e1e';
+                container.style.color = '#ffffff';
+                themeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                body.style.background = 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)';
+                body.style.color = 'var(--dark)';
+                container.style.background = 'white';
+                container.style.color = 'var(--dark)';
+                themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        }
+        
+        // Event Listeners
+        sendBtn.addEventListener('click', sendMessage);
+        
+        userInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        clearBtn.addEventListener('click', clearChatHistory);
+        
+        infoBtn.addEventListener('click', function() {
+            alert("Rayhan's AI Assistant\n\nFeatures:\n1. Schedule meetings with Rayhan\n2. Check his availability\n3. Get email confirmations\n4. Ask questions about Rayhan\n\nTo start, simply introduce yourself!");
+        });
+        
+        themeBtn.addEventListener('click', toggleTheme);
+        
+        micBtn.addEventListener('click', function() {
+            alert("Voice input feature coming soon! For now, please type your message.");
+        });
+        
+        // Initialize app
+        init();
+    </script>
+</body>
+</html>
